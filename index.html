@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html ng-app="TyponautApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>Typonaut</title>
+
+    <link rel="stylesheet" href="/node_modules/angular-material/angular-material.css">
+</head>
+
+<body layout="column" layout-align="center center">
+    <div ng-controller="TyponautController" layout="row"  flex="33" layout-align="center center" ng-cloak>
+        <md-content layout-padding>
+                <form name="playerForm" layout="column" novalidate>
+                    <div layout="column" layout-align="center center">
+                        <p>{{word}}</p>
+                        <md-input-container>
+                            <label>Type here</label>
+                            <input ng-model="input">
+                        </md-input-container>
+                        <md-button type="submit" class="md-primary md-raised">Submit</md-button>
+                    </div>
+                </form>
+        </md-content>
+    </div>
+
+    <script src="/node_modules/angular/angular.js"></script>
+    <script src="/node_modules/angular-aria/angular-aria.js"></script>
+    <script src="/node_modules/angular-animate/angular-animate.js"></script>
+    <script src="/node_modules/angular-material/angular-material.js"></script>
+    <script src="/app.js"></script>
+
+</body>
+
+</html>
