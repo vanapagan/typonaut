@@ -1,12 +1,34 @@
 'use strict';
 
-var TyponautApp = angular.module('TyponautApp', ['ngMaterial']);
+var TyponautApp = angular.module('TyponautApp', ['ngMaterial', 'btford.socket-io']);
 
-TyponautApp.controller('TyponautController', function ($scope, $http) {
+app.factory('socket', ['$rootScope', function ($rootScope) {
+    var socket = io.connect();
+
+    return {
+        on: function (eventName, callback) {
+            socket.on(eventName, callback);
+        },
+        emit: function (eventName, data) {
+            socket.emit(eventName, data);
+        }
+    };
+}]);
+
+TyponautApp.controller('TyponautController', function ($scope, $http, socket) {
     $scope.word = 'testword';
 
-    var words = ['test1', 'test2', 'test3', 'test4', 'test5'];
+    $scope.newCustomers = [];
+    $scope.currentCustomer = {};
 
-    
+    $scope.join = function () {
+        socket.emit('add-customer', $scope.currentCustomer);
+    };
+
+    socket.on('notification', function (data) {
+        $scope.$apply(function () {
+            $scope.newCustomers.push(data.customer);
+        });
+    });
 
 });
