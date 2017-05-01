@@ -35,21 +35,26 @@
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="/app.js"></script>
     <script>
-        $(function () {
-            var socket = io();
-            $('form').submit(function () {
-                socket.emit('send_input', $('#input').val());
-                $('#input').val('');
-            });
-            socket.on('chat message', function (msg) {
-                $('#messages').append($('<li>').text(msg));
-            });
-            socket.on('new_word', function (msg) {
-                $('#word').text(msg);
-            });
-            socket.on('status', function (msg) {
-                $('#status').text(msg);
-            });
+        var socket = io();
+        $('form').submit(function () {
+            socket.emit('send_input', $('#input').val());
+            $('#input').val('');
+        });
+        socket.on('chat message', function (msg) {
+            $('#messages').append($('<li>').text(msg));
+        });
+        socket.on('new_word', function (msg) {
+            $('#word').text(msg);
+        });
+        socket.on('status', function (msg) {
+            $('#status').text(msg);
+        });
+
+        var TyponautApp = angular.module('TyponautApp', ['ngMaterial']);
+
+        TyponautApp.controller('TyponautController', function ($scope, $http) {
+            $scope.word = 'testword';
+
         });
     </script>
 </body>

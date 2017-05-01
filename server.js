@@ -18,15 +18,13 @@ var words = ['dog', 'cat', 'hello', 'money', 'spider', 'computer'];
 var index = 0;
 
 var clients = [];
-var one = false;
-
-
 
 var current_word = words[0];
 
 io.sockets.on('connection', function (socket, client) {
 
   clients.push(client);
+
   io.emit('status', socket.id + ' joined the game');
 
   socket.on('disconnect', function () {
@@ -56,6 +54,7 @@ io.sockets.on('connection', function (socket, client) {
       sendNewWordOut();
     }
   });
+
 
 });
 
