@@ -14,7 +14,8 @@
         <md-content layout-padding>
             <form name="playerForm" layout="column" novalidate>
                 <div layout="column" layout-align="center center">
-                    <p id="word">worrrddd<p>
+                    <p id="status">Game has started!</p>
+                    <h2 id="word"></h2>
                     <md-input-container>
                         <label>Type here</label>
                         <input id="input" ng-model="input">
@@ -45,6 +46,9 @@
             });
             socket.on('new_word', function (msg) {
                 $('#word').text(msg);
+            });
+            socket.on('winner', function (msg) {
+                $('#status').text(msg);
             });
         });
     </script>

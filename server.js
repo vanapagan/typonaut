@@ -18,8 +18,6 @@ var words = ['dog', 'cat', 'hello', 'money', 'spider', 'computer'];
 var index = 0;
 
 var clients = [];
-var p1_points = 0;
-var p2_points = 0;
 var one = false;
 
 io.sockets.on('connect', function (client) {
@@ -28,15 +26,12 @@ io.sockets.on('connect', function (client) {
   console.log('number of players: ' + clients.length);
 
   client.on('disconnect', function () {
-    console.log('a player disconnected');
+    console.log('player disconnected');
     clients.splice(clients.indexOf(client), 1);
-    console.log('number of players left: ' + clients.length);
   });
 });
 
 var current_word = words[0];
-
-
 
 io.sockets.on('connection', function (socket) {
 
@@ -58,6 +53,8 @@ io.sockets.on('connection', function (socket) {
 
   socket.on("send_input", function (check_word) {
     if (current_word == check_word) {
+      console.log(socket.id);
+      io.emit('winner', socket.id + ' won the last round');
       setNewWord();
       sendNewWordOut();
     }
