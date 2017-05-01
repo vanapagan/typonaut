@@ -34,11 +34,10 @@
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="/app.js"></script>
     <script>
-    /*
         $(function () {
             var socket = io();
             $('form').submit(function () {
-                socket.emit('send', 'tere');
+                socket.emit('send_input', $('#input').val());
                 $('#input').val('');
             });
             socket.on('chat message', function (msg) {
@@ -47,7 +46,7 @@
             socket.on('new_word', function (msg) {
                 $('#word').text(msg);
             });
-        });*/
+        });
     </script>
 </body>
 

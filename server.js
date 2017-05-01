@@ -2,10 +2,11 @@ var express = require('express');
 var app = require('express')();
 var fs = require('fs');
 var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
 app.use(express.static('public'));
 
-http.listen(3000, function(){
+http.listen(3000, function () {
   console.log('listening on *:3000');
 });
 
@@ -13,72 +14,54 @@ app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
-var io = require('socket.io').listen(http);
-fs.readFile(__dirname + '/wordlist.txt', 'utf-8', function (err, data) {
-  if (err) {
-    console.log(err);
-  }
-  var word_list = data.toString().split('\n');
-  var players = 0;
-  var p1_points = 0;
-  var p2_points = 0;
-  var one = false;
-  io.sockets.on('connection', function (socket) {
-    if (one == false) {
-      socket.id = 1;
-      one = true;
-    } else {
-      socket.id = 2;
-      one = false;
-    }
+var words = ['dog', 'cat', 'hello', 'money', 'spider', 'computer'];
+var index = 0;
 
-    socket.on('disconnect', function (r) {
-      if (socket.id == 1) {
-        p1_points = 0;
-        one = false;
-      } else {
-        p2_words = [];
-        p2_points = 0;
-        one = true;
-      }
-    });
+var clients = [];
+var p1_points = 0;
+var p2_points = 0;
+var one = false;
 
-    socket.on("check_word", function (check_word) {
+io.sockets.on('connect', function (client) {
+  console.log('a player connected');
+  clients.push(client);
+  console.log('number of players: ' + clients.length);
 
-    });
-
+  client.on('disconnect', function () {
+    console.log('a player disconnected');
+    clients.splice(clients.indexOf(client), 1);
+    console.log('number of players left: ' + clients.length);
   });
-
 });
 
-/*
-var answered = false;
-var clients = [];
+var current_word = words[0];
+
+
 
 io.sockets.on('connection', function (socket) {
-  console.log('a player connected');
 
-  clients.push(socket.id);
-  console.log('id ' + socket.id);
+  io.emit('new_word', current_word);
 
-  io.emit('new_word', "new word");
-
-  socket.on('disconnect', function () {
-    console.log('a player disconnected');
-  });
-  socket.on('chat message', function (msg) {
-    console.log('message: ' + msg);
-  });
-  socket.on('send', function (msg) {
-    io.emit('new_word', "new new word");
-    socket.broadcast.to(socket.id).emit('new_word', 'You won!');
-    if (!answered) {
-      console.log('rerer');
-      console.log('idd:' + socket.id);
-      socket.broadcast.to(socket.id).emit('new_word', 'You won!');
+  var setNewWord = function () {
+    index++;
+    if (index <= words.length - 1) {
+      current_word = words[index];
     } else {
-      socket.broadcast.to(socket.id).emit('new_word', 'You lost!');
+      current_word = 'GAME OVER!';
+    }
+    console.log(current_word);
+  }
+
+  var sendNewWordOut = function () {
+    io.emit('new_word', current_word);
+  }
+
+  socket.on("send_input", function (check_word) {
+    if (current_word == check_word) {
+      setNewWord();
+      sendNewWordOut();
     }
   });
+
 });
-*/
+
