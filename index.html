@@ -47,7 +47,7 @@
             socket.on('new_word', function (msg) {
                 $('#word').text(msg);
             });
-            socket.on('winner', function (msg) {
+            socket.on('status', function (msg) {
                 $('#status').text(msg);
             });
         });

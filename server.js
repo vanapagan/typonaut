@@ -20,20 +20,19 @@ var index = 0;
 var clients = [];
 var one = false;
 
-io.sockets.on('connect', function (client) {
-  console.log('a player connected');
-  clients.push(client);
-  console.log('number of players: ' + clients.length);
 
-  client.on('disconnect', function () {
-    console.log('player disconnected');
-    clients.splice(clients.indexOf(client), 1);
-  });
-});
 
 var current_word = words[0];
 
-io.sockets.on('connection', function (socket) {
+io.sockets.on('connection', function (socket, client) {
+
+  clients.push(client);
+  io.emit('status', socket.id + ' joined the game');
+
+  socket.on('disconnect', function () {
+    clients.splice(clients.indexOf(client), 1);
+    io.emit('status', socket.id + ' left the game');
+  });
 
   io.emit('new_word', current_word);
 
@@ -44,7 +43,6 @@ io.sockets.on('connection', function (socket) {
     } else {
       current_word = 'GAME OVER!';
     }
-    console.log(current_word);
   }
 
   var sendNewWordOut = function () {
@@ -53,8 +51,7 @@ io.sockets.on('connection', function (socket) {
 
   socket.on("send_input", function (check_word) {
     if (current_word == check_word) {
-      console.log(socket.id);
-      io.emit('winner', socket.id + ' won the last round');
+      io.emit('status', socket.id + ' won the last round');
       setNewWord();
       sendNewWordOut();
     }
