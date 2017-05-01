@@ -14,10 +14,10 @@
         <md-content layout-padding>
             <form name="playerForm" layout="column" novalidate>
                 <div layout="column" layout-align="center center">
-                    <p>{{word}}</p>
+                    <p id="word">worrrddd</p>
                     <md-input-container>
                         <label>Type here</label>
-                        <input ng-model="input">
+                        <input id="input" ng-model="input">
                     </md-input-container>
                     <md-button type="submit" class="md-primary md-raised">Submit</md-button>
                 </div>
@@ -36,8 +36,17 @@
     <script>
         $(function () {
             var socket = io();
+            $('form').submit(function () {
+                socket.emit('send', 'tere');
+                $('#input').val('');
+            });
+            socket.on('chat message', function (msg) {
+                $('#messages').append($('<li>').text(msg));
+            });
+            socket.on('new_word', function (msg) {
+                $('#word').text(msg);
+            });
         });
-
     </script>
 </body>
 
