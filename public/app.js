@@ -39,6 +39,10 @@ var TyponautApp = angular.module('TyponautApp', ['ngMaterial', 'btford.socket-io
                 return 0;
             }
 
+            socket.on('secret', function (msg) {
+                console.log(msg);
+            });
+
             socket.on('leaderboard', function (msg) {
                 console.log(msg);
                 var arr = msg;

@@ -84,19 +84,32 @@ var current_word = words[0];
 io.on('connection', function (socket) {
 
   var player = null;
+  var gameStarted = false;
+
+  function gameStarting() {
+    setTimeout(function () {
+      console.log('1');
+      io.emit('status', 'Game starts in 2 seconds...');
+      startGame();
+    }, 1000);
+  };
+
+  function startGame() {
+    setTimeout(function () {
+      io.emit('status', 'Game has started. Good luck!');
+      io.emit('new_word', current_word);
+    }, 2000);
+  }
 
   socket.on('join', function (name) {
     socket.name = name;
-    socket.points = 0;
-    players.addPlayer(new Player().setId(socket.id).setName(name).setPoints(0));
-    io.emit('status', socket.name + ' joined');
+    if (players.addPlayer(new Player().setId(socket.id).setName(name).setPoints(0)).players.length < 2) {
+      socket.emit('status', 'Waiting for more players to join...');
+    } else {
+      io.emit('status', name + ' joined the game');
+      gameStarting();
+    }
   });
-
-  if (players.length < 2) {
-    io.emit('status', 'Waiting for more players to join...');
-  } else {
-    io.emit('status', 'a new player joined the game');
-  }
 
   socket.on('disconnect', function () {
     if (socket.name != null) {
@@ -106,7 +119,7 @@ io.on('connection', function (socket) {
     }
   });
 
-  io.emit('new_word', current_word);
+  // io.emit('new_word', current_word);
 
   var setNewWord = function () {
     index++;
