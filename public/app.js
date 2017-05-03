@@ -16,6 +16,7 @@ var TyponautApp = angular.module('TyponautApp', ['ngMaterial', 'btford.socket-io
         TyponautApp.controller('TyponautController', function ($scope, $http, socket) {
             $scope.showWelcomeView = true;
             $scope.showGameView = false;
+            $scope.showInputForm = false;
             $scope.players = [];
 
             $scope.name = 'kristo';
@@ -58,10 +59,8 @@ var TyponautApp = angular.module('TyponautApp', ['ngMaterial', 'btford.socket-io
 
             $scope.showLeaderboard = function () {
                 if ($scope.players != null && $scope.players.length > 0) {
-                    console.log('do show board');
                     return true;
                 } else {
-                    console.log('do not show board');
                     return false;
                 }
             }

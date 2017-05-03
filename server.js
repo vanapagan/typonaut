@@ -18,6 +18,51 @@ console.log('Server started at http://localhost:' + port);
 var words = ['dog', 'cat', 'hello', 'money', 'spider', 'computer'];
 var index = 0;
 
+var Collection = function () {
+  this.players = [];
+};
+
+Collection.prototype.addPlayer = function (player) {
+  this.players.push(player);
+  console.log('added');
+  return this;
+};
+
+Collection.prototype.getPlayer = function (id) {
+  console.log('get player id ' + id);
+  console.log(id);
+  console.log(this.players);
+  for (var i = 0; i < this.players.length; i++) {
+    if (this.players[i].id == id) {
+      console.log('found player');
+      return this.players[i];
+    }
+  }
+  return null;
+}
+
+Collection.prototype.getPlayerIndex = function (id) {
+  for (var i = 0; i < this.players.length; i++) {
+    if (this.players[i].id == id) {
+      console.log('found player');
+      return i;
+    }
+  }
+  return -1;
+}
+
+Collection.prototype.removePlayer = function (index) {
+  console.log('remove player');
+  console.log(index);
+  this.players.splice(index, 1);
+  console.log(this.players);
+}
+
+Collection.prototype.addPoints = function (player, word) {
+  player.points += word.length;
+  console.log('points added');
+}
+
 var Player = function () {
   this.id = '';
   this.name = '';
@@ -39,25 +84,19 @@ Player.prototype.setPoints = function (points) {
   return this;
 };
 
-var players = [];
-
-var addToPlayersArray = function (player) {
-
-}
-
+var players = new Collection();
 var current_word = words[0];
-
-var counter = 0;
 
 io.on('connection', function (socket) {
 
   var player = null;
 
   socket.on('join', function (name) {
-    player = new Player().setId(socket.id).setName(name).setPoints(0);
-    players.push(player);
-    console.log(player.name + ' joined');
-    console.log(players.length);
+    socket.name = name;
+    socket.points = 0;
+    //players.push(new Player().setId(socket.id).setName(name).setPoints(0));
+    players.addPlayer(new Player().setId(socket.id).setName(name).setPoints(0));
+    io.emit('status', socket.name + ' joined');
   });
 
   if (players.length < 2) {
@@ -67,9 +106,12 @@ io.on('connection', function (socket) {
   }
 
   socket.on('disconnect', function () {
-    players.splice(findElement(players, 'id', socket.id), 1);
-    io.emit('status', player.name + ' left the game');
-    console.log('player left')
+    if (socket.name != null) {
+      //players.players.splice(findElement('id', socket.id), 1);
+      players.removePlayer(players.getPlayerIndex(socket.id));
+      io.emit('status', socket.name + ' left the game');
+      console.log(socket.name + ' left the game');
+    }
   });
 
   io.emit('new_word', current_word);
@@ -85,30 +127,31 @@ io.on('connection', function (socket) {
   }
 
   var sendNewWordOut = function () {
+    console.log('new word');
     io.emit('new_word', current_word);
   }
 
   var sendLeaderboard = function () {
-    io.emit('leaderboard', players);
+    io.emit('leaderboard', players.players);
   }
 
-  function findElement(arr, propName, propValue) {
-    for (var i = 0; i < arr.length; i++)
-      if (arr[i].id == propValue)
-        return arr[i];
-  }
+  /*
+    function findElement(propName, propValue) {
+      for (var i = 0; i < players.players.length; i++)
+        if (players.players[i].id == propValue)
+          console.log(players.players[i]);
+      return players.players[i];
+    }
 
   var addPoints = function (check_word, id) {
-    var obj = findElement(players, 'id', id);
-    obj.points += check_word.length;
-  }
+    findElement(id).points += check_word.length;
+  }*/
 
   socket.on("send_input", function (check_word) {
     if (current_word == check_word) {
-      console.log(players);
-      console.log(players.lenght);
-      io.emit('status', player.name + ' won the last round');
-      addPoints(check_word, socket.id);
+      io.emit('status', socket.name + ' won the last round');
+      players.addPoints(players.getPlayer(socket.id), check_word)
+      //addPoints(check_word, socket.id);
       setNewWord();
       sendNewWordOut();
       sendLeaderboard();
