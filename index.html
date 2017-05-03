@@ -10,10 +10,10 @@
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
 </head>
 
-<body ng-controller="TyponautController" layout="column" layout-align="center center" ng-cloak style="background-color: rgb(250,250,250)">
+<body ng-controller="TyponautController" layout="row" layout-align="center center" ng-cloak style="background-color: rgb(250,250,250)">
     <md-content layout-padding>
         <div ng-show="showWelcomeView" layout="row" flex="33" layout-align="center center">
-            <form id="nameForm" layout="column" ng-submit="submitName()" novalidate>
+            <form id="nameForm" layout="column" ng-submit="join()" novalidate>
                 <div layout="column" layout-align="center center">
                     <p id="status">Welcome!</p>
                     <md-input-container>
@@ -31,16 +31,13 @@
                     <h2>{{word}}</h2>
                     <md-input-container>
                         <label>Type here</label>
-                        <input ng-model="input">
+                        <input ng-model="input" autocomplete="false">
                     </md-input-container>
                     <md-button type="submit" class="md-primary md-raised">Submit</md-button>
                 </div>
             </form>
         </div>
-    </md-content>
-    <br />
-    <div ng-show="showLeaderboard()" layout="row" flex="33" layout-align="center center" ng-cloak>
-        <md-content layout-padding>
+        <div ng-show="showLeaderboard()" layout="row" flex="33" layout-align="center center" ng-cloak>
             <table class="table table-hover table-striped">
                 <thead>
                     <tr>
@@ -55,8 +52,10 @@
                     </tr>
                 </tbody>
             </table>
-        </md-content>
-    </div>
+        </div>
+    </md-content>
+    <br />
+
 
     <script src="/node_modules/angular/angular.js"></script>
     <script src="/node_modules/angular-aria/angular-aria.js"></script>
@@ -67,75 +66,7 @@
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="/app.js"></script>
     <script type="text/javascript">
-        var TyponautApp = angular.module('TyponautApp', ['ngMaterial', 'btford.socket-io']);
-
-        TyponautApp.factory('socket', ['$rootScope', function ($rootScope) {
-            var socket = io.connect();
-
-            return {
-                on: function (eventName, callback) {
-                    socket.on(eventName, callback);
-                },
-                emit: function (eventName, data) {
-                    socket.emit(eventName, data);
-                }
-            };
-        }]);
-
-        TyponautApp.controller('TyponautController', function ($scope, $http, socket) {
-            $scope.showWelcomeView = true;
-            $scope.showGameView = false;
-            $scope.players = [];
-
-            $scope.name = 'kristo';
-
-            socket.on('new_word', function (msg) {
-                $scope.word = msg;
-                $scope.$apply();
-            });
-
-            socket.on('status', function (msg) {
-                $scope.status = msg;
-                $scope.$apply();
-            });
-
-            function compare(a, b) {
-                if (a.points < b.points)
-                    return 1;
-                if (a.points > b.points)
-                    return -1;
-                return 0;
-            }
-
-            socket.on('leaderboard', function (msg) {
-                console.log(msg);
-                var arr = msg;
-                $scope.players = arr.sort(compare);
-                $scope.$apply();
-            });
-
-            $scope.sendWord = function () {
-                socket.emit('send_input', $scope.input);
-                $scope.input = '';
-            }
-
-            $scope.submitName = function () {
-                $scope.showWelcomeView = false;
-                $scope.showGameView = true;
-                socket.emit('test', 'testword');
-            }
-
-            $scope.showLeaderboard = function () {
-                if ($scope.players != null && $scope.players.length > 0) {
-                    console.log('do show board');
-                    return true;
-                } else {
-                    console.log('do not show board');
-                    return false;
-                }
-            }
-
-        });
+        
     </script>
 </body>
 

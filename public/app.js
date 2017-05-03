@@ -1,12 +1,69 @@
-'use strict';
+var TyponautApp = angular.module('TyponautApp', ['ngMaterial', 'btford.socket-io']);
 
-var TyponautApp = angular.module('TyponautApp', ['ngMaterial']);
+        TyponautApp.factory('socket', ['$rootScope', function ($rootScope) {
+            var socket = io.connect();
 
-TyponautApp.controller('TyponautController', function ($scope, $http) {
-    $scope.word = 'testword';
+            return {
+                on: function (eventName, callback) {
+                    socket.on(eventName, callback);
+                },
+                emit: function (eventName, data) {
+                    socket.emit(eventName, data);
+                }
+            };
+        }]);
 
-    var words = ['test1', 'test2', 'test3', 'test4', 'test5'];
+        TyponautApp.controller('TyponautController', function ($scope, $http, socket) {
+            $scope.showWelcomeView = true;
+            $scope.showGameView = false;
+            $scope.players = [];
 
-    
+            $scope.name = 'kristo';
 
-});
+            socket.on('new_word', function (msg) {
+                $scope.word = msg;
+                $scope.$apply();
+            });
+
+            socket.on('status', function (msg) {
+                $scope.status = msg;
+                $scope.$apply();
+            });
+
+            function compare(a, b) {
+                if (a.points < b.points)
+                    return 1;
+                if (a.points > b.points)
+                    return -1;
+                return 0;
+            }
+
+            socket.on('leaderboard', function (msg) {
+                console.log(msg);
+                var arr = msg;
+                $scope.players = arr.sort(compare);
+                $scope.$apply();
+            });
+
+            $scope.sendWord = function () {
+                socket.emit('send_input', $scope.input);
+                $scope.input = '';
+            }
+
+            $scope.join = function () {
+                $scope.showWelcomeView = false;
+                $scope.showGameView = true;
+                socket.emit('join', $scope.name);
+            }
+
+            $scope.showLeaderboard = function () {
+                if ($scope.players != null && $scope.players.length > 0) {
+                    console.log('do show board');
+                    return true;
+                } else {
+                    console.log('do not show board');
+                    return false;
+                }
+            }
+
+        });
