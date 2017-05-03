@@ -25,7 +25,11 @@ io.sockets.on('connection', function (socket, client) {
 
   clients.push(client);
 
-  io.emit('status', socket.id + ' joined the game');
+  if (clients.length < 2) {
+    io.emit('status', 'Waiting for other players to join...');
+  } else {
+    io.emit('status', socket.id + ' joined the game');
+  }
 
   socket.on('disconnect', function () {
     clients.splice(clients.indexOf(client), 1);
@@ -53,6 +57,10 @@ io.sockets.on('connection', function (socket, client) {
       setNewWord();
       sendNewWordOut();
     }
+  });
+
+  socket.on("test", function (check_word) {
+    console.log('check_word');
   });
 
 
