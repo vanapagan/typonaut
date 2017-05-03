@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="/node_modules/angular-material/angular-material.css">
 </head>
 
-<body ng-controller="TyponautController" layout="column" layout-align="center center">
-    <div ng-show="showWelcomeView" layout="row" flex="33" layout-align="center center" ng-cloak>
+<body ng-controller="TyponautController" layout="column" layout-align="center center" ng-cloak>
+    <div ng-show="showWelcomeView" layout="row" flex="33" layout-align="center center">
         <md-content layout-padding>
             <form id="nameForm" layout="column" ng-submit="submitName()" novalidate>
                 <div layout="column" layout-align="center center">
@@ -26,13 +26,13 @@
     </div>
     <div ng-show="showGameView" layout="row" flex="33" layout-align="center center" ng-cloak>
         <md-content layout-padding>
-            <form id="gameForm" name="playerForm" layout="column" novalidate>
+            <form ng-submit="sendWord()" novalidate>
                 <div layout="column" layout-align="center center">
-                    <p id="status">Game has started!</p>
-                    <h2 id="word"></h2>
+                    <p>{{status}}</p>
+                    <h2>{{word}}</h2>
                     <md-input-container>
                         <label>Type here</label>
-                        <input id="input" ng-model="input">
+                        <input ng-model="input">
                     </md-input-container>
                     <md-button type="submit" class="md-primary md-raised">Submit</md-button>
                 </div>
@@ -44,11 +44,63 @@
     <script src="/node_modules/angular-aria/angular-aria.js"></script>
     <script src="/node_modules/angular-animate/angular-animate.js"></script>
     <script src="/node_modules/angular-material/angular-material.js"></script>
-    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/node_modules/angular-socket-io/socket.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="/app.js"></script>
-    <script>
+    <script type="text/javascript">
+        var TyponautApp = angular.module('TyponautApp', ['ngMaterial', 'btford.socket-io']);
+
+        //TyponautApp.factory('socket', function (socketFactory) {
+        //  io.connect()
+        // return socketFactory();
+        //});
+
+        TyponautApp.factory('socket', ['$rootScope', function ($rootScope) {
+            var socket = io.connect();
+
+            return {
+                on: function (eventName, callback) {
+                    socket.on(eventName, callback);
+                },
+                emit: function (eventName, data) {
+                    socket.emit(eventName, data);
+                }
+            };
+        }]);
+
+        TyponautApp.controller('TyponautController', function ($scope, $http, socket) {
+            $scope.showWelcomeView = true;
+            $scope.showGameView = false;
+
+            $scope.name = 'kristo';
+
+            socket.on('new_word', function (msg) {
+                $scope.word = msg;
+                $scope.$apply();
+            });
+
+            socket.on('status', function (msg) {
+                $scope.status = msg;
+                $scope.$apply();
+            });
+
+            $scope.sendWord = function () {
+                console.log('tere');
+                socket.emit('send_input', $scope.input);
+                $scope.input = '';
+                console.log('finished');
+            }
+
+            $scope.submitName = function () {
+                $scope.showWelcomeView = false;
+                $scope.showGameView = true;
+                socket.emit('test', 'testword');
+            }
+
+        });
+
+        /*
         var socket = io();
         $('#gameForm').submit(function () {
             socket.emit('send_input', $('#input').val());
@@ -77,7 +129,7 @@
                 socket.emit('test', 'testword');
             }
 
-        });
+        });*/
     </script>
 </body>
 
