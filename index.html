@@ -7,11 +7,12 @@
     <title>Typonaut</title>
 
     <link rel="stylesheet" href="/node_modules/angular-material/angular-material.css">
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
 </head>
 
-<body ng-controller="TyponautController" layout="column" layout-align="center center" ng-cloak>
-    <div ng-show="showWelcomeView" layout="row" flex="33" layout-align="center center">
-        <md-content layout-padding>
+<body ng-controller="TyponautController" layout="column" layout-align="center center" ng-cloak style="background-color: rgb(250,250,250)">
+    <md-content layout-padding>
+        <div ng-show="showWelcomeView" layout="row" flex="33" layout-align="center center">
             <form id="nameForm" layout="column" ng-submit="submitName()" novalidate>
                 <div layout="column" layout-align="center center">
                     <p id="status">Welcome!</p>
@@ -22,10 +23,8 @@
                     <md-button type="submitName" class="md-primary md-raised">Join</md-button>
                 </div>
             </form>
-        </md-content>
-    </div>
-    <div ng-show="showGameView" layout="row" flex="33" layout-align="center center" ng-cloak>
-        <md-content layout-padding>
+        </div>
+        <div ng-show="showGameView" layout="row" flex="33" layout-align="center center" ng-cloak>
             <form ng-submit="sendWord()" novalidate>
                 <div layout="column" layout-align="center center">
                     <p>{{status}}</p>
@@ -37,6 +36,25 @@
                     <md-button type="submit" class="md-primary md-raised">Submit</md-button>
                 </div>
             </form>
+        </div>
+    </md-content>
+    <br />
+    <div ng-show="showLeaderboard()" layout="row" flex="33" layout-align="center center" ng-cloak>
+        <md-content layout-padding>
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Points</th>
+                    </tr>
+                </thead>
+                <tbody ng-model="players">
+                    <tr ng-repeat="p in players">
+                        <td>{{p.name}}</td>
+                        <td>{{p.points}}</td>
+                    </tr>
+                </tbody>
+            </table>
         </md-content>
     </div>
 
@@ -50,11 +68,6 @@
     <script src="/app.js"></script>
     <script type="text/javascript">
         var TyponautApp = angular.module('TyponautApp', ['ngMaterial', 'btford.socket-io']);
-
-        //TyponautApp.factory('socket', function (socketFactory) {
-        //  io.connect()
-        // return socketFactory();
-        //});
 
         TyponautApp.factory('socket', ['$rootScope', function ($rootScope) {
             var socket = io.connect();
@@ -72,6 +85,7 @@
         TyponautApp.controller('TyponautController', function ($scope, $http, socket) {
             $scope.showWelcomeView = true;
             $scope.showGameView = false;
+            $scope.players = [];
 
             $scope.name = 'kristo';
 
@@ -85,11 +99,24 @@
                 $scope.$apply();
             });
 
+            function compare(a, b) {
+                if (a.points < b.points)
+                    return 1;
+                if (a.points > b.points)
+                    return -1;
+                return 0;
+            }
+
+            socket.on('leaderboard', function (msg) {
+                console.log(msg);
+                var arr = msg;
+                $scope.players = arr.sort(compare);
+                $scope.$apply();
+            });
+
             $scope.sendWord = function () {
-                console.log('tere');
                 socket.emit('send_input', $scope.input);
                 $scope.input = '';
-                console.log('finished');
             }
 
             $scope.submitName = function () {
@@ -98,38 +125,17 @@
                 socket.emit('test', 'testword');
             }
 
-        });
-
-        /*
-        var socket = io();
-        $('#gameForm').submit(function () {
-            socket.emit('send_input', $('#input').val());
-            $('#input').val('');
-        });
-        socket.on('chat message', function (msg) {
-            $('#messages').append($('<li>').text(msg));
-        });
-        socket.on('new_word', function (msg) {
-            $('#word').text(msg);
-        });
-        socket.on('status', function (msg) {
-            $('#status').text(msg);
-        });
-
-        var TyponautApp = angular.module('TyponautApp', ['ngMaterial']);
-
-        TyponautApp.controller('TyponautController', function ($scope, $http) {
-            $scope.showWelcomeView = true;
-            $scope.showGameView = false;
-            $scope.name = 'kristo';
-
-            $scope.submitName = function () {
-                $scope.showWelcomeView = false;
-                $scope.showGameView = true;
-                socket.emit('test', 'testword');
+            $scope.showLeaderboard = function () {
+                if ($scope.players != null && $scope.players.length > 0) {
+                    console.log('do show board');
+                    return true;
+                } else {
+                    console.log('do not show board');
+                    return false;
+                }
             }
 
-        });*/
+        });
     </script>
 </body>
 

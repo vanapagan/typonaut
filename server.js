@@ -29,20 +29,23 @@ var clients = [];
 
 var current_word = words[0];
 
-//Socket connection handler
-io.on('connection', function (socket, client) {
+var counter = 0;
+
+io.on('connection', function (socket) {
+
+  clients.push({ 'id': socket.id, 'name': 'player' + counter++, 'points': 0 });
   console.log('player joined');
-  clients.push(client);
 
   if (clients.length < 2) {
-    io.emit('status', 'Waiting for other players to join...');
+    io.emit('status', 'Waiting for more players to join...');
   } else {
-    io.emit('status', socket.id + ' joined the game');
+    io.emit('status', findElement(clients, 'id', socket.id).name + ' joined the game');
   }
 
   socket.on('disconnect', function () {
-    clients.splice(clients.indexOf(client), 1);
-    io.emit('status', socket.id + ' left the game');
+    clients.splice(findElement(clients, 'id', socket.id), 1);
+    io.emit('status', 'player left the game');
+    console.log('player left')
   });
 
   io.emit('new_word', current_word);
@@ -52,7 +55,8 @@ io.on('connection', function (socket, client) {
     if (index <= words.length - 1) {
       current_word = words[index];
     } else {
-      current_word = 'GAME OVER!';
+      index = 0;
+      current_word = words[index];
     }
   }
 
@@ -60,60 +64,31 @@ io.on('connection', function (socket, client) {
     io.emit('new_word', current_word);
   }
 
+  var sendLeaderboard = function () {
+    io.emit('leaderboard', clients);
+  }
+
+  function findElement(arr, propName, propValue) {
+    for (var i = 0; i < arr.length; i++)
+      if (arr[i][propName] == propValue)
+        return arr[i];
+  }
+
+  var addPoints = function (check_word, id) {
+    var obj = findElement(clients, 'id', id); 
+    obj.points += check_word.length;
+  }
+
   socket.on("send_input", function (check_word) {
-    console.log('received player input');
     if (current_word == check_word) {
-      io.emit('status', socket.id + ' won the last round');
+      io.emit('status', findElement(clients, 'id', socket.id).name + ' won the last round');
+      addPoints(check_word, socket.id);
       setNewWord();
       sendNewWordOut();
+      sendLeaderboard();
     }
   });
 
 });
 
-/*
-io.sockets.on('connection', function (socket, client) {
-
-  clients.push(client);
-
-  if (clients.length < 2) {
-    io.emit('status', 'Waiting for other players to join...');
-  } else {
-    io.emit('status', socket.id + ' joined the game');
-  }
-
-  socket.on('disconnect', function () {
-    clients.splice(clients.indexOf(client), 1);
-    io.emit('status', socket.id + ' left the game');
-  });
-
-  io.emit('new_word', current_word);
-
-  var setNewWord = function () {
-    index++;
-    if (index <= words.length - 1) {
-      current_word = words[index];
-    } else {
-      current_word = 'GAME OVER!';
-    }
-  }
-
-  var sendNewWordOut = function () {
-    io.emit('new_word', current_word);
-  }
-
-  socket.on("send_input", function (check_word) {
-    if (current_word == check_word) {
-      io.emit('status', socket.id + ' won the last round');
-      setNewWord();
-      sendNewWordOut();
-    }
-  });
-
-  socket.on("test", function (check_word) {
-    console.log('check_word');
-  });
-
-
-});*/
 
