@@ -24,17 +24,12 @@ var Collection = function () {
 
 Collection.prototype.addPlayer = function (player) {
   this.players.push(player);
-  console.log('added');
   return this;
 };
 
 Collection.prototype.getPlayer = function (id) {
-  console.log('get player id ' + id);
-  console.log(id);
-  console.log(this.players);
   for (var i = 0; i < this.players.length; i++) {
     if (this.players[i].id == id) {
-      console.log('found player');
       return this.players[i];
     }
   }
@@ -44,7 +39,6 @@ Collection.prototype.getPlayer = function (id) {
 Collection.prototype.getPlayerIndex = function (id) {
   for (var i = 0; i < this.players.length; i++) {
     if (this.players[i].id == id) {
-      console.log('found player');
       return i;
     }
   }
@@ -52,15 +46,15 @@ Collection.prototype.getPlayerIndex = function (id) {
 }
 
 Collection.prototype.removePlayer = function (index) {
-  console.log('remove player');
   console.log(index);
   this.players.splice(index, 1);
   console.log(this.players);
 }
 
 Collection.prototype.addPoints = function (player, word) {
-  player.points += word.length;
-  console.log('points added');
+  if (player != null && word != null) {
+    player.points += word.length;
+  }
 }
 
 var Player = function () {
@@ -94,7 +88,6 @@ io.on('connection', function (socket) {
   socket.on('join', function (name) {
     socket.name = name;
     socket.points = 0;
-    //players.push(new Player().setId(socket.id).setName(name).setPoints(0));
     players.addPlayer(new Player().setId(socket.id).setName(name).setPoints(0));
     io.emit('status', socket.name + ' joined');
   });
@@ -107,7 +100,6 @@ io.on('connection', function (socket) {
 
   socket.on('disconnect', function () {
     if (socket.name != null) {
-      //players.players.splice(findElement('id', socket.id), 1);
       players.removePlayer(players.getPlayerIndex(socket.id));
       io.emit('status', socket.name + ' left the game');
       console.log(socket.name + ' left the game');
@@ -126,35 +118,22 @@ io.on('connection', function (socket) {
     }
   }
 
-  var sendNewWordOut = function () {
-    console.log('new word');
+  var broadcastNewWord = function () {
     io.emit('new_word', current_word);
   }
 
-  var sendLeaderboard = function () {
+  var broadcastLeaderboard = function () {
     io.emit('leaderboard', players.players);
   }
 
-  /*
-    function findElement(propName, propValue) {
-      for (var i = 0; i < players.players.length; i++)
-        if (players.players[i].id == propValue)
-          console.log(players.players[i]);
-      return players.players[i];
-    }
-
-  var addPoints = function (check_word, id) {
-    findElement(id).points += check_word.length;
-  }*/
-
   socket.on("send_input", function (check_word) {
     if (current_word == check_word) {
+      console.log(players.players);
       io.emit('status', socket.name + ' won the last round');
-      players.addPoints(players.getPlayer(socket.id), check_word)
-      //addPoints(check_word, socket.id);
+      players.addPoints(players.getPlayer(socket.id), check_word);
       setNewWord();
-      sendNewWordOut();
-      sendLeaderboard();
+      broadcastNewWord();
+      broadcastLeaderboard();
     }
   });
 
