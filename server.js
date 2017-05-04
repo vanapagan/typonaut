@@ -46,9 +46,7 @@ Collection.prototype.getPlayerIndex = function (id) {
 }
 
 Collection.prototype.removePlayer = function (index) {
-  console.log(index);
-  this.players.splice(index, 1);
-  console.log(this.players);
+  return this.players.splice(index, 1);
 }
 
 Collection.prototype.addPoints = function (player, word) {
@@ -88,7 +86,6 @@ io.on('connection', function (socket) {
 
   function gameStarting() {
     setTimeout(function () {
-      console.log('1');
       io.emit('status', 'Game starts in 2 seconds...');
       startGame();
     }, 1000);
@@ -96,6 +93,9 @@ io.on('connection', function (socket) {
 
   function startGame() {
     setTimeout(function () {
+      gameStarted = true;
+      current_word = words[0]
+      io.emit('game', 'started');
       io.emit('status', 'Game has started. Good luck!');
       io.emit('new_word', current_word);
     }, 2000);
@@ -113,13 +113,14 @@ io.on('connection', function (socket) {
 
   socket.on('disconnect', function () {
     if (socket.name != null) {
-      players.removePlayer(players.getPlayerIndex(socket.id));
+
       io.emit('status', socket.name + ' left the game');
       console.log(socket.name + ' left the game');
+      if (players.removePlayer(players.getPlayerIndex(socket.id)).length < 2) {
+        io.emit('game', 'ended');
+      }
     }
   });
-
-  // io.emit('new_word', current_word);
 
   var setNewWord = function () {
     index++;
@@ -141,7 +142,6 @@ io.on('connection', function (socket) {
 
   socket.on("send_input", function (check_word) {
     if (current_word == check_word) {
-      console.log(players.players);
       io.emit('status', socket.name + ' won the last round');
       players.addPoints(players.getPlayer(socket.id), check_word);
       setNewWord();

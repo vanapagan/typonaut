@@ -27,12 +27,14 @@
             <form ng-submit="sendWord()" novalidate>
                 <div layout="column" layout-align="center center">
                     <p>{{status}}</p>
-                    <h2>{{word}}</h2>
-                    <md-input-container>
-                        <label>Type here</label>
-                        <input ng-model="input" autocomplete="false" autofocus>
-                    </md-input-container>
-                    <md-button type="submit" class="md-primary md-raised">Submit</md-button>
+                    <div ng-show="gameStarted" layout="column" layout-align="center center">
+                        <h2>{{word}}</h2>
+                        <md-input-container>
+                            <label>Type here</label>
+                            <input ng-model="input" autofocus>
+                        </md-input-container>
+                        <md-button type="submit" class="md-primary md-raised">Submit</md-button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -54,7 +56,6 @@
         </div>
     </md-content>
     <br />
-
 
     <script src="/node_modules/angular/angular.js"></script>
     <script src="/node_modules/angular-aria/angular-aria.js"></script>
