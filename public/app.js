@@ -80,6 +80,11 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
         $scope.$apply();
     });
 
+    socket.on('comment', function (msg) {
+        $scope.comment = msg;
+        $scope.$apply();
+    });
+
     socket.on('endgame', function (msg) {
         if ($scope.inPlay == true) {
             if (msg == '-1') {
@@ -122,7 +127,7 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
             $scope.showGameView = true;
             $scope.inPlay = true;
         } else {
-            $scope.welcome = 'Sorry the game has already started';
+            $scope.welcome = 'The game is already in progress. Please try again later.';
         }
         $scope.$apply();
     });

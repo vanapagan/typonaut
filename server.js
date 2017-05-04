@@ -180,7 +180,7 @@ io.on('connection', function (socket) {
       io.emit('status', name + ' joined the game');
       gameStarting1();
     } else {
-      socket.emit('welcome', 'Sorry the game has already started');
+      socket.emit('welcome', 'The game is already in progress. Please try again later.');
     }
   });
 
@@ -237,6 +237,8 @@ io.on('connection', function (socket) {
   socket.on("send_input", function (check_word) {
     if (current_word == check_word) {
       socket.emit('sound', 'round_win');
+      socket.emit('comment', 'Good job!');
+      socket.broadcast.emit('comment', 'Come on, you\'re faster than you think!');
       io.emit('status', socket.name + ' won the last round');
       players.addPoints(players.getPlayer(socket.id), check_word);
       setNewWord();
@@ -244,6 +246,8 @@ io.on('connection', function (socket) {
       broadcastLeaderboard();
     } else {
       socket.emit('sound', 'round_lost');
+      socket.emit('comment', 'Try not make typos...');
+      socket.broadcast.emit('comment', 'You still have a chance!');
     }
   });
 
