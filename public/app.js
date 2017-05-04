@@ -22,6 +22,7 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
     $scope.gameEnded = false;
     $scope.showRestart = false;
     $scope.welcome = 'Welcome!';
+    $scope.inPlay = false;
 
     $scope.name = 'kristo';
 
@@ -56,12 +57,14 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
     });
 
     socket.on('endgame', function (msg) {
-        if (msg == '-1') {
-            $scope.endgame = 'Could not figure out winner. Everyone left.';
-        } else if (msg == 'draw') {
-            $scope.endgame = "It's a draw!"
-        } else {
-            $scope.endgame = msg.name + ' won with ' + msg.points + ' points!';
+        if ($scope.inPlay == true) {
+            if (msg == '-1') {
+                $scope.endgame = 'Could not figure out winner. Everyone left.';
+            } else if (msg == 'draw') {
+                $scope.endgame = "It's a draw!"
+            } else {
+                $scope.endgame = msg.name + ' won with ' + msg.points + ' points!';
+            }
         }
         $scope.$apply();
     });
@@ -69,6 +72,7 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
     socket.on('game', function (msg) {
         if (msg == 'started') {
             $scope.gameStarted = true;
+            $scope.inPlay = true;
         }
         if (msg == 'ended') {
             $scope.showGameView = false;
@@ -103,9 +107,9 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
             return false;
         }
     };
-    
+
     $scope.showEndgame = function () {
-        if ($scope.gameStarted && $scope.gameEnded) {
+        if ($scope.gameStarted && $scope.gameEnded && $scope.inPlay) {
             return true;
         } else {
             return false;

@@ -110,6 +110,8 @@ var gameStarted = false;
 var players = new Collection();
 var current_word = words[0];
 
+var winnderDisplayed = false;
+
 io.on('connection', function (socket) {
 
   socket.emit('welcome', 'Welcome!');
@@ -139,6 +141,7 @@ io.on('connection', function (socket) {
       socket.emit('status', 'Waiting for more players to join...');
     } else if (!gameStarted) {
       gameStarted = true;
+      console.log(players.players);
       socket.emit('accepted', 'yes');
       io.emit('status', name + ' joined the game');
       gameStarting();
@@ -158,30 +161,35 @@ io.on('connection', function (socket) {
       io.emit('status', socket.name + ' left the game');
       if (players.removePlayer(players.getPlayerIndex(socket.id)).length < 2) {
         io.emit('game', 'ended');
-        setGameStartedFalseIn1Second();
+        if (!winnderDisplayed) {
+          winnderDisplayed = true;
+          io.emit('endgame', players.getWinner());
+        }
         if (players.players.length == 0) {
-          players.players = [];
           gameStarted = false;
+          winnderDisplayed = false;
           current_word = words[0];
+          index = 0;
+          console.log('no players anymore');
         }
       }
     }
   });
 
   var setNewWord = function () {
+    console.log(index);
     index++;
+    console.log(index);
     if (index <= words.length - 1) {
       current_word = words[index];
     } else {
-      /*
-      index = 0;
-      current_word = words[index];*/
       io.emit('game', 'ended');
-      // get winner and his points
-      io.emit('endgame', players.getWinner());
-      players.players = [];
-      gameStarted = false;
-      current_word = words[0];
+      if (!winnderDisplayed) {
+        winnderDisplayed = true;
+        index = 0;
+        current_word = words[0];
+        io.emit('endgame', players.getWinner());
+      }
     }
   }
 
