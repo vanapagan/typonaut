@@ -194,10 +194,10 @@ io.on('connection', function (socket) {
     if (socket.name != null) {
       io.emit('status', socket.name + ' left the game');
       if (players.removePlayer(players.getPlayerIndex(socket.id)).length < 2) {
-        io.emit('game', 'ended');
         if (!winnerDisplayed) {
           winnerDisplayed = true;
           io.emit('endgame', players.getWinner());
+          io.emit('game', 'ended');
           broadcastLeaderboard();
         }
         if (players.players.length == 0) {

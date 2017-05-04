@@ -4,6 +4,8 @@ var newUser = new Audio('new_user.wav');
 var newWord = new Audio('new_word.wav');
 var roundWin = new Audio('round_win.wav');
 var roundLost = new Audio('round_lost.wav');
+var gameVictory = new Audio('game_victory.wav');
+var roundLost = new Audio('game_lost.wav');
 
 function playSound(sound) {
     sound.play();
@@ -100,6 +102,7 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
         if (msg == 'ended') {
             $scope.showGameView = false;
             $scope.gameEnded = true;
+            playSound(gameVictory);
         }
         $scope.$apply();
     });
