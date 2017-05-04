@@ -94,6 +94,7 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
         if (msg == 'yes') {
             $scope.showWelcomeView = false;
             $scope.showGameView = true;
+            $scope.inPlay = true;
         } else {
             $scope.welcome = 'Sorry the game has already started';
         }
@@ -101,7 +102,15 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
     });
 
     $scope.showLeaderboard = function () {
-        if ($scope.gameStarted && $scope.players != null && $scope.players.length > 0) {
+        if ($scope.gameStarted && $scope.players != null && $scope.players.length > 0 && $scope.inPlay) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    $scope.showMenu = function () {
+        if ($scope.gameStarted && $scope.inPlay) {
             return true;
         } else {
             return false;

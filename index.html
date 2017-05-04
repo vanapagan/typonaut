@@ -10,59 +10,63 @@
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
 </head>
 
-<body ng-controller="TyponautController" layout="row" layout-align="center center" ng-cloak style="background-color: rgb(250,250,250)">
-    <md-content layout-padding>
-        <div ng-show="showWelcomeView" layout="row" flex="33" layout-align="center center">
-            <form id="nameForm" layout="column" ng-submit="join()" novalidate>
-                <div layout="column" layout-align="center center">
-                    <p>{{welcome}}</p>
-                    <md-input-container>
-                        <label>Enter your name to begin</label>
-                        <input id="name" ng-model="name" autofocus>
-                    </md-input-container>
-                    <md-button type="submitName" class="md-primary md-raised">Join</md-button>
-                </div>
-            </form>
-        </div>
-        <div ng-show="showGameView" layout="row" flex="33" layout-align="center center" ng-cloak>
-            <form ng-submit="sendWord()" novalidate>
-                <div layout="column" layout-align="center center">
-                    <p>{{status}}</p>
-                    <div ng-show="gameStarted" layout="column" layout-align="center center">
-                        <h2>{{word}}</h2>
+<body ng-controller="TyponautController" layout="column" ng-cloak style="background-color: rgb(250,250,250)">
+    <div ng-show="showMenu()" layout="row" layout-align="end start" layout-padding>
+        <p>{{name}}</p>
+    </div>
+    <div layout-align="center center" layout="column">
+        <md-content layout-padding>
+            <div ng-show="showWelcomeView" layout="row" flex="33" layout-align="center center">
+                <form id="nameForm" layout="column" ng-submit="join()" novalidate>
+                    <div layout="column" layout-align="center center">
+                        <p>{{welcome}}</p>
                         <md-input-container>
-                            <label>Type here</label>
-                            <input ng-model="input" autofocus>
+                            <label>Enter your name to begin</label>
+                            <input id="name" ng-model="name" autofocus>
                         </md-input-container>
-                        <md-button class="md-primary md-raised">Submit</md-button>
+                        <md-button type="submitName" class="md-primary md-raised">Join</md-button>
                     </div>
-                    <!--md-button ng-show="showRestart" ng-click="reloadPage()" type="submit" class="md-primary md-raised">Restart</md-button-->
-                </div>
-            </form>
-        </div>
-        <div ng-show="showEndgame()" layout="column" flex="33" layout-align="center center" ng-cloak>
-            <h3>{{endgame}}</h3>
-            <!--md-button ng-click="reloadPage()" type="submit" class="md-primary md-raised">Restart</md-button-->
-        </div>
-        <div ng-show="showLeaderboard()" layout="row" flex="33" layout-align="center center" ng-cloak>
-            <table class="table table-hover table-striped">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Points</th>
-                    </tr>
-                </thead>
-                <tbody ng-model="players">
-                    <tr ng-repeat="p in players">
-                        <td>{{p.name}}</td>
-                        <td>{{p.points}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </md-content>
+                </form>
+            </div>
+            <div ng-show="showGameView" layout="row" flex="33" layout-align="center center" ng-cloak>
+                <form ng-submit="sendWord()" novalidate>
+                    <div layout="column" layout-align="center center">
+                        <p>{{status}}</p>
+                        <div ng-show="gameStarted" layout="column" layout-align="center center">
+                            <h2>{{word}}</h2>
+                            <md-input-container>
+                                <label>Type here</label>
+                                <input ng-model="input" autofocus>
+                            </md-input-container>
+                            <md-button class="md-primary md-raised">Submit</md-button>
+                        </div>
+                        <!--md-button ng-show="showRestart" ng-click="reloadPage()" type="submit" class="md-primary md-raised">Restart</md-button-->
+                    </div>
+                </form>
+            </div>
+            <div ng-show="showEndgame()" layout="column" flex="33" layout-align="center center" ng-cloak>
+                <h3>{{endgame}}</h3>
+                <!--md-button ng-click="reloadPage()" type="submit" class="md-primary md-raised">Restart</md-button-->
+            </div>
+            <div ng-show="showLeaderboard()" layout="row" flex="33" layout-align="center center" ng-cloak>
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody ng-model="players">
+                        <tr ng-repeat="p in players">
+                            <td>{{p.name}}</td>
+                            <td>{{p.points}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </md-content>
+    </div>
     <br />
-
     <script src="/node_modules/angular/angular.js"></script>
     <script src="/node_modules/angular-aria/angular-aria.js"></script>
     <script src="/node_modules/angular-animate/angular-animate.js"></script>
