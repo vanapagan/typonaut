@@ -15,6 +15,7 @@
         <div ng-show="showWelcomeView" layout="row" flex="33" layout-align="center center">
             <form id="nameForm" layout="column" ng-submit="join()" novalidate>
                 <div layout="column" layout-align="center center">
+                    <p>{{welcome}}</p>
                     <md-input-container>
                         <label>Enter your name to begin</label>
                         <input id="name" ng-model="name" autofocus>
@@ -35,9 +36,13 @@
                         </md-input-container>
                         <md-button class="md-primary md-raised">Submit</md-button>
                     </div>
-                    <md-button ng-show="showRestart" ng-click="reloadPage()" type="submit" class="md-primary md-raised">Restart</md-button>
+                    <!--md-button ng-show="showRestart" ng-click="reloadPage()" type="submit" class="md-primary md-raised">Restart</md-button-->
                 </div>
             </form>
+        </div>
+        <div ng-show="showEndgame()" layout="column" flex="33" layout-align="center center" ng-cloak>
+            <h3>{{endgame}}</h3>
+            <!--md-button ng-click="reloadPage()" type="submit" class="md-primary md-raised">Restart</md-button-->
         </div>
         <div ng-show="showLeaderboard()" layout="row" flex="33" layout-align="center center" ng-cloak>
             <table class="table table-hover table-striped">

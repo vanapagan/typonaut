@@ -15,7 +15,8 @@ app.get('/', function (req, res) {
 http.listen(port);
 console.log('Server started at http://localhost:' + port);
 
-var words = ['dog', 'cat', 'hello', 'money', 'spider', 'computer'];
+// var words = ['cow', 'dog', 'cat', 'hello', 'money', 'spider', 'computer'];
+var words = ['dog', 'cat'];
 var index = 0;
 
 var Collection = function () {
@@ -55,6 +56,34 @@ Collection.prototype.addPoints = function (player, word) {
   }
 }
 
+Collection.prototype.getWinner = function () {
+  if (this.players != null && this.players.length > 0) {
+    if (this.players.length == 1) {
+      return this.players[0];
+    } else {
+      var maxPlayer = new Player().setId('tempplayerid').setName('tempplayername').setPoints(0);
+      var secMaxPlayer = new Player().setId('tempplayerid2').setName('tempplayername2').setPoints(0);
+
+      for (var i = 0; i < this.players.length; i++) {
+        if (maxPlayer.points < this.players[i].points) {
+          secMaxPlayer = maxPlayer;
+          maxPlayer = this.players[i];
+        } else if (secMaxPlayer.points < this.players[i].points) {
+          secMaxPlayer = this.players[i];
+        }
+      }
+
+      if (maxPlayer != null && secMaxPlayer != null && maxPlayer.points == secMaxPlayer.points) {
+        return 'draw';
+      } else {
+        return maxPlayer;
+      }
+    }
+  } else {
+    return -1;
+  }
+}
+
 var Player = function () {
   this.id = '';
   this.name = '';
@@ -83,6 +112,8 @@ var current_word = words[0];
 
 io.on('connection', function (socket) {
 
+  socket.emit('welcome', 'Welcome!');
+
   var player = null;
 
   function gameStarting() {
@@ -94,7 +125,6 @@ io.on('connection', function (socket) {
 
   function startGame() {
     setTimeout(function () {
-      gameStarted = true;
       current_word = words[0]
       io.emit('game', 'started');
       io.emit('status', 'Game has started. Good luck!');
@@ -104,19 +134,36 @@ io.on('connection', function (socket) {
 
   socket.on('join', function (name) {
     socket.name = name;
-    if (players.addPlayer(new Player().setId(socket.id).setName(name).setPoints(0)).players.length < 2) {
+    if (!gameStarted && players.addPlayer(new Player().setId(socket.id).setName(name).setPoints(0)).players.length < 2) {
+      socket.emit('accepted', 'yes');
       socket.emit('status', 'Waiting for more players to join...');
-    } else {
+    } else if (!gameStarted) {
+      gameStarted = true;
+      socket.emit('accepted', 'yes');
       io.emit('status', name + ' joined the game');
       gameStarting();
+    } else {
+      socket.emit('welcome', 'Sorry the game has already started');
     }
   });
+
+  function setGameStartedFalseIn1Second() {
+    setTimeout(function () {
+      gameStarted = false;
+    }, 1000);
+  };
 
   socket.on('disconnect', function () {
     if (socket.name != null) {
       io.emit('status', socket.name + ' left the game');
       if (players.removePlayer(players.getPlayerIndex(socket.id)).length < 2) {
         io.emit('game', 'ended');
+        setGameStartedFalseIn1Second();
+        if (players.players.length == 0) {
+          players.players = [];
+          gameStarted = false;
+          current_word = words[0];
+        }
       }
     }
   });
@@ -126,11 +173,15 @@ io.on('connection', function (socket) {
     if (index <= words.length - 1) {
       current_word = words[index];
     } else {
-      
       /*
-      // enable for infinite looping
       index = 0;
       current_word = words[index];*/
+      io.emit('game', 'ended');
+      // get winner and his points
+      io.emit('endgame', players.getWinner());
+      players.players = [];
+      gameStarted = false;
+      current_word = words[0];
     }
   }
 

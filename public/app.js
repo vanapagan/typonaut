@@ -19,7 +19,9 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
     $scope.showInputForm = false;
     $scope.players = [];
     $scope.gameStarted = false;
+    $scope.gameEnded = false;
     $scope.showRestart = false;
+    $scope.welcome = 'Welcome!';
 
     $scope.name = 'kristo';
 
@@ -48,13 +50,29 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
         $scope.$apply();
     });
 
+    socket.on('welcome', function (msg) {
+        $scope.welcome = msg;
+        $scope.$apply();
+    });
+
+    socket.on('endgame', function (msg) {
+        if (msg == '-1') {
+            $scope.endgame = 'Could not figure out winner. Everyone left.';
+        } else if (msg == 'draw') {
+            $scope.endgame = "It's a draw!"
+        } else {
+            $scope.endgame = msg.name + ' won with ' + msg.points + ' points!';
+        }
+        $scope.$apply();
+    });
+
     socket.on('game', function (msg) {
         if (msg == 'started') {
             $scope.gameStarted = true;
         }
         if (msg == 'ended') {
-            $scope.gameStarted = false;
-            $scope.showRestart = true;
+            $scope.showGameView = false;
+            $scope.gameEnded = true;
         }
         $scope.$apply();
     });
@@ -65,18 +83,34 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
     }
 
     $scope.join = function () {
-        $scope.showWelcomeView = false;
-        $scope.showGameView = true;
         socket.emit('join', $scope.name);
     }
 
+    socket.on('accepted', function (msg) {
+        if (msg == 'yes') {
+            $scope.showWelcomeView = false;
+            $scope.showGameView = true;
+        } else {
+            $scope.welcome = 'Sorry the game has already started';
+        }
+        $scope.$apply();
+    });
+
     $scope.showLeaderboard = function () {
-        if ($scope.players != null && $scope.players.length > 0) {
+        if ($scope.gameStarted && $scope.players != null && $scope.players.length > 0) {
             return true;
         } else {
             return false;
         }
-    }
+    };
+    
+    $scope.showEndgame = function () {
+        if ($scope.gameStarted && $scope.gameEnded) {
+            return true;
+        } else {
+            return false;
+        }
+    };
 
     $scope.reloadPage = function () {
         $window.location.reload();
