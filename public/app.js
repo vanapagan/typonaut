@@ -59,11 +59,11 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
     socket.on('endgame', function (msg) {
         if ($scope.inPlay == true) {
             if (msg == '-1') {
-                $scope.endgame = 'Could not figure out winner. Everyone left.';
+                $scope.endgame = 'Could not figure out the winner. Everyone left.';
             } else if (msg == 'draw') {
                 $scope.endgame = "It's a draw!"
             } else {
-                $scope.endgame = msg.name + ' won with ' + msg.points + ' points!';
+                $scope.endgame = msg.name + ' won the game!';
             }
         }
         $scope.$apply();
@@ -73,6 +73,7 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
         if (msg == 'started') {
             $scope.gameStarted = true;
             $scope.inPlay = true;
+            $scope.gameEnded = false;
         }
         if (msg == 'ended') {
             $scope.showGameView = false;

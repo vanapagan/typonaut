@@ -110,7 +110,7 @@ var gameStarted = false;
 var players = new Collection();
 var current_word = words[0];
 
-var winnderDisplayed = false;
+var winnerDisplayed = false;
 
 io.on('connection', function (socket) {
 
@@ -118,20 +118,55 @@ io.on('connection', function (socket) {
 
   var player = null;
 
-  function gameStarting() {
+  function gameStarting1() {
     setTimeout(function () {
-      io.emit('status', 'Game starts in 2 seconds...');
-      startGame();
+      io.emit('status', 'Game starts in 2 seconds');
+      gameStarting2()
     }, 1000);
+  };
+
+  function gameStarting2() {
+    setTimeout(function () {
+      io.emit('status', 'Game starts in 1 second');
+      gameStarting3();
+    }, 1000);
+  };
+
+  function gameStarting3() {
+    setTimeout(function () {
+      io.emit('status', 'Get ready');
+      gameStarting4()
+    }, 250);
+  };
+
+  function gameStarting4() {
+    setTimeout(function () {
+      io.emit('status', 'Get ready.');
+      gameStarting5();
+    }, 250);
+  };
+
+  function gameStarting5() {
+    setTimeout(function () {
+      io.emit('status', 'Get ready.. ');
+      gameStarting6();
+    }, 250);
+  };
+
+  function gameStarting6() {
+    setTimeout(function () {
+      io.emit('status', 'Get ready...');
+      startGame();
+    }, 250);
   };
 
   function startGame() {
     setTimeout(function () {
       current_word = words[0]
       io.emit('game', 'started');
-      io.emit('status', 'Game has started. Good luck!');
+      io.emit('status', 'Game started. Good luck!');
       io.emit('new_word', current_word);
-    }, 2000);
+    }, 500);
   }
 
   socket.on('join', function (name) {
@@ -141,10 +176,9 @@ io.on('connection', function (socket) {
       socket.emit('status', 'Waiting for more players to join...');
     } else if (!gameStarted) {
       gameStarted = true;
-      console.log(players.players);
       socket.emit('accepted', 'yes');
       io.emit('status', name + ' joined the game');
-      gameStarting();
+      gameStarting1();
     } else {
       socket.emit('welcome', 'Sorry the game has already started');
     }
@@ -161,34 +195,33 @@ io.on('connection', function (socket) {
       io.emit('status', socket.name + ' left the game');
       if (players.removePlayer(players.getPlayerIndex(socket.id)).length < 2) {
         io.emit('game', 'ended');
-        if (!winnderDisplayed) {
-          winnderDisplayed = true;
+        if (!winnerDisplayed) {
+          winnerDisplayed = true;
           io.emit('endgame', players.getWinner());
+          broadcastLeaderboard();
         }
         if (players.players.length == 0) {
           gameStarted = false;
-          winnderDisplayed = false;
+          winnerDisplayed = false;
           current_word = words[0];
           index = 0;
-          console.log('no players anymore');
         }
       }
     }
   });
 
   var setNewWord = function () {
-    console.log(index);
     index++;
-    console.log(index);
     if (index <= words.length - 1) {
       current_word = words[index];
     } else {
       io.emit('game', 'ended');
-      if (!winnderDisplayed) {
-        winnderDisplayed = true;
+      if (!winnerDisplayed) {
+        winnerDisplayed = true;
         index = 0;
         current_word = words[0];
         io.emit('endgame', players.getWinner());
+        broadcastLeaderboard();
       }
     }
   }

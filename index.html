@@ -12,7 +12,14 @@
 
 <body ng-controller="TyponautController" layout="column" ng-cloak style="background-color: rgb(250,250,250)">
     <div ng-show="showMenu()" layout="row" layout-align="end start" layout-padding>
-        <p>{{name}}</p>
+        <div layout="row" layout-align="end end">
+            <div>
+                <p style="margin-right: 1em">{{name}}</p>
+            </div>
+            <div>
+                <p ng-click="reloadPage()">Back</p>
+            </div>
+        </div>
     </div>
     <div layout-align="center center" layout="column">
         <md-content layout-padding>
@@ -38,18 +45,16 @@
                                 <label>Type here</label>
                                 <input ng-model="input" autofocus>
                             </md-input-container>
-                            <md-button class="md-primary md-raised">Submit</md-button>
                         </div>
-                        <!--md-button ng-show="showRestart" ng-click="reloadPage()" type="submit" class="md-primary md-raised">Restart</md-button-->
                     </div>
                 </form>
             </div>
             <div ng-show="showEndgame()" layout="column" flex="33" layout-align="center center" ng-cloak>
                 <h3>{{endgame}}</h3>
-                <!--md-button ng-click="reloadPage()" type="submit" class="md-primary md-raised">Restart</md-button-->
+                <md-button ng-click="reloadPage()"class="md-primary md-raised">Restart</md-button>
             </div>
             <div ng-show="showLeaderboard()" layout="row" flex="33" layout-align="center center" ng-cloak>
-                <table class="table table-hover table-striped">
+                <table class="table table-hover borderless">
                     <thead>
                         <tr>
                             <th>Name</th>
