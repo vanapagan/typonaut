@@ -13,12 +13,13 @@ TyponautApp.factory('socket', ['$rootScope', function ($rootScope) {
     };
 }]);
 
-TyponautApp.controller('TyponautController', function ($scope, $http, socket) {
+TyponautApp.controller('TyponautController', function ($scope, $http, $window, socket) {
     $scope.showWelcomeView = true;
     $scope.showGameView = false;
     $scope.showInputForm = false;
     $scope.players = [];
     $scope.gameStarted = false;
+    $scope.showRestart = false;
 
     $scope.name = 'kristo';
 
@@ -53,6 +54,7 @@ TyponautApp.controller('TyponautController', function ($scope, $http, socket) {
         }
         if (msg == 'ended') {
             $scope.gameStarted = false;
+            $scope.showRestart = true;
         }
         $scope.$apply();
     });
@@ -75,5 +77,9 @@ TyponautApp.controller('TyponautController', function ($scope, $http, socket) {
             return false;
         }
     }
+
+    $scope.reloadPage = function () {
+        $window.location.reload();
+    };
 
 });

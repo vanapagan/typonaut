@@ -76,13 +76,14 @@ Player.prototype.setPoints = function (points) {
   return this;
 };
 
+var gameStarted = false;
+
 var players = new Collection();
 var current_word = words[0];
 
 io.on('connection', function (socket) {
 
   var player = null;
-  var gameStarted = false;
 
   function gameStarting() {
     setTimeout(function () {
@@ -113,9 +114,7 @@ io.on('connection', function (socket) {
 
   socket.on('disconnect', function () {
     if (socket.name != null) {
-
       io.emit('status', socket.name + ' left the game');
-      console.log(socket.name + ' left the game');
       if (players.removePlayer(players.getPlayerIndex(socket.id)).length < 2) {
         io.emit('game', 'ended');
       }
@@ -127,8 +126,11 @@ io.on('connection', function (socket) {
     if (index <= words.length - 1) {
       current_word = words[index];
     } else {
+      
+      /*
+      // enable for infinite looping
       index = 0;
-      current_word = words[index];
+      current_word = words[index];*/
     }
   }
 

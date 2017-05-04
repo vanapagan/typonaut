@@ -33,8 +33,9 @@
                             <label>Type here</label>
                             <input ng-model="input" autofocus>
                         </md-input-container>
-                        <md-button type="submit" class="md-primary md-raised">Submit</md-button>
+                        <md-button class="md-primary md-raised">Submit</md-button>
                     </div>
+                    <md-button ng-show="showRestart" ng-click="reloadPage()" type="submit" class="md-primary md-raised">Restart</md-button>
                 </div>
             </form>
         </div>
