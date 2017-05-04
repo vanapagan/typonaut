@@ -1,5 +1,14 @@
 var TyponautApp = angular.module('TyponautApp', ['ngMaterial', 'btford.socket-io']);
 
+var newUser = new Audio('new_user.wav');
+var newWord = new Audio('new_word.wav');
+var roundWin = new Audio('round_win.wav');
+var roundLost = new Audio('round_lost.wav');
+
+function playSound(sound) {
+    sound.play();
+};
+
 TyponautApp.factory('socket', ['$rootScope', function ($rootScope) {
     var socket = io.connect();
 
@@ -27,11 +36,15 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
     $scope.name = 'kristo';
 
     socket.on('new_word', function (msg) {
+        playSound(newWord);
         $scope.word = msg;
         $scope.$apply();
     });
 
     socket.on('status', function (msg) {
+        if (msg.search("joined the game") != -1) {
+            playSound(newUser);
+        }
         $scope.status = msg;
         $scope.$apply();
     });
@@ -42,7 +55,16 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
         if (a.points > b.points)
             return -1;
         return 0;
-    }
+    };
+
+    socket.on('sound', function (msg) {
+        if (msg == 'round_win') {
+            playSound(roundWin);
+        }
+        if (msg == 'round_lost') {
+            playSound(roundLost);
+        }
+    });
 
     socket.on('leaderboard', function (msg) {
         console.log(msg);

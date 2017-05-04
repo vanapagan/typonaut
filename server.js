@@ -236,11 +236,14 @@ io.on('connection', function (socket) {
 
   socket.on("send_input", function (check_word) {
     if (current_word == check_word) {
+      socket.emit('sound', 'round_win');
       io.emit('status', socket.name + ' won the last round');
       players.addPoints(players.getPlayer(socket.id), check_word);
       setNewWord();
       broadcastNewWord();
       broadcastLeaderboard();
+    } else {
+      socket.emit('sound', 'round_lost');
     }
   });
 
