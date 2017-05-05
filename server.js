@@ -16,7 +16,7 @@ http.listen(port);
 console.log('Server started at http://localhost:' + port);
 
 // var words = ['cow', 'dog', 'cat', 'hello', 'money', 'spider', 'computer'];
-var words = ['dog', 'cat'];
+var words = ['cow', 'dog'];
 var index = 0;
 
 var Collection = function () {

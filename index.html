@@ -15,19 +15,20 @@
     <div id="header" layout="column" layout-align="start">
         <div id="menu_holder" ng-show="showMenu()" layout="column" layout-align="end">
             <div id="menu" layout="row" layout-align="end center">
-                <div class="menu_item" layout-align="center center">
+                <div class="menu_item" layout-align="center center"  align="center">
                     <p class="menu_item_content">{{name}}</p>
                 </div>
-                <div class="menu_item" layout-align="center center">
-                    <p class="menu_item_content" ng-click="reloadPage()">Quit</p>
+                <div class="menu_item menu_item_clickable" layout-align="center center" ng-click="reloadPage()" align="center">
+                    <p class="menu_item_content">Quit</p>
                 </div>
             </div>
         </div>
     </div>
     <div class="enjoy-css">Typonaut</div>
-    <br />
+    <div id="divider">
+    </div>
     <div layout-align="center center" layout="column">
-        <md-content layout-padding>
+        <md-content>
             <div ng-show="showWelcomeView" layout="row" flex="33" layout-align="center center">
                 <form id="nameForm" layout="column" ng-submit="join()" novalidate>
                     <div layout="column" layout-align="center center">
@@ -78,7 +79,6 @@
             </div>
         </md-content>
     </div>
-    <br />
     <script src="node_modules/jquery/dist/jquery.js"></script>
     <script src="/node_modules/angular/angular.js"></script>
     <script src="/node_modules/angular-aria/angular-aria.js"></script>
@@ -87,9 +87,6 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/node_modules/angular-socket-io/socket.js"></script>
     <script src="/app.js"></script>
-    <script type="text/javascript">
-
-    </script>
 </body>
 
 </html>
