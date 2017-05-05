@@ -114,7 +114,7 @@ var winnerDisplayed = false;
 
 io.on('connection', function (socket) {
 
-  socket.emit('welcome', 'Welcome!');
+  socket.emit('welcome', 'Please enter your name below and press Enter!');
 
   var player = null;
 

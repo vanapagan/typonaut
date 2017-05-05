@@ -32,7 +32,6 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
     $scope.gameStarted = false;
     $scope.gameEnded = false;
     $scope.showRestart = false;
-    $scope.welcome = 'Welcome!';
     $scope.inPlay = false;
 
     $scope.name = 'kristo';

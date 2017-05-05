@@ -22,8 +22,8 @@ body {
 }
 
 #header {
-    height: 15em;
-    max-height: 15em;
+    height: 11em;
+    max-height: 11em;
 }
 
 .unselectable {
@@ -33,4 +33,20 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+.enjoy-css {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  border: none;
+  font: normal normal bold 63px/1 "Courier New", Courier, monospace;
+  color: #3e515e;
+  text-align: center;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  -webkit-transition: all 150ms cubic-bezier(0.19, 1, 0.22, 1) 30ms;
+  -moz-transition: all 150ms cubic-bezier(0.19, 1, 0.22, 1) 30ms;
+  -o-transition: all 150ms cubic-bezier(0.19, 1, 0.22, 1) 30ms;
+  transition: all 150ms cubic-bezier(0.19, 1, 0.22, 1) 30ms;
 }
