@@ -12,13 +12,15 @@
 </head>
 
 <body ng-controller="TyponautController" layout="column" ng-cloak style="background-color: rgb(250,250,250)">
-    <div id="header" layout="row" layout-align="end start">
-        <div ng-show="showMenu()" layout="row" layout-align="end start" layout-padding>
-            <div>
-                <p style="margin-right: 1em">{{name}}</p>
-            </div>
-            <div>
-                <p ng-click="reloadPage()">Back</p>
+    <div id="header" layout="column" layout-align="start">
+        <div style="width: 100%" ng-show="showMenu()" layout="column" layout-align="end">
+            <div layout="row" layout-align="end center" style="background-color: blue; color: white">
+                <div layout-align="center center" style="margin-right: 2em">
+                    <p>{{name}}</p>
+                </div>
+                <div layout-align="center center">
+                    <p ng-click="reloadPage()">Back</p>
+                </div>
             </div>
         </div>
     </div>
