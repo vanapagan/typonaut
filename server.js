@@ -178,7 +178,7 @@ io.on('connection', function (socket) {
       gameStarted = true;
       socket.emit('accepted', 'yes');
       io.emit('status', name + ' joined the game');
-      socket.broadcast.emit('sound', "new_player");
+      socket.broadcast.emit('sound', "new_user");
       gameStarting1();
     } else {
       socket.emit('welcome', 'The game is already in progress. Please try again later.');
@@ -215,12 +215,14 @@ io.on('connection', function (socket) {
     index++;
     if (index <= words.length - 1) {
       current_word = words[index];
+      broadcastNewWord();
     } else {
       io.emit('game', 'ended');
       if (!winnerDisplayed) {
         winnerDisplayed = true;
         index = 0;
         current_word = words[0];
+        socket.broadcast.emit('sound', 'game_victory');
         io.emit('endgame', players.getWinner());
         broadcastLeaderboard();
       }
@@ -237,21 +239,24 @@ io.on('connection', function (socket) {
 
   socket.on("send_input", function (check_word) {
     if (current_word == check_word) {
-      socket.emit('sound', 'round_win');
-      socket.emit('comment', 'Good job!');
-      socket.broadcast.emit('comment', 'Come on, you\'re faster than that!');
+      var tempIdx = index;
+      if (++tempIdx <= words.length - 1) {
+        socket.emit('sound', 'round_win');
+        socket.emit('comment', 'Good job, ' + players.getPlayer(socket.id).name + '!');
+        socket.broadcast.emit('sound', 'too_slow');
+        socket.broadcast.emit('comment', 'Come on, you\'re faster than that!');
+      }
       io.emit('status', socket.name + ' won the last round');
       players.addPoints(players.getPlayer(socket.id), check_word);
       setNewWord();
-      broadcastNewWord();
       broadcastLeaderboard();
     } else {
-      socket.emit('sound', 'round_lost');
-      socket.emit('comment', 'Try not make typos...');
+      socket.emit('sound', 'wrong_answer');
+      socket.emit('comment', 'Watch out for typos!');
       socket.broadcast.emit('comment', 'You still have a chance!');
+      socket.broadcast.emit('sound', 'still_chance');
     }
   });
-
 });
 
 

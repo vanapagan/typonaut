@@ -3,9 +3,11 @@ var TyponautApp = angular.module('TyponautApp', ['ngMaterial', 'btford.socket-io
 var newUser = new Audio('new_user.wav');
 var newWord = new Audio('new_word.wav');
 var roundWin = new Audio('round_win.wav');
-var roundLost = new Audio('round_lost.wav');
+var wrongAnswer = new Audio('wrong_answer.wav');
 var gameVictory = new Audio('game_victory.wav');
-var roundLost = new Audio('game_lost.wav');
+var gameLost = new Audio('game_lost.wav');
+var tooSlow = new Audio('too_slow.wav');
+var stillChance = new Audio('still_chance.wav');
 
 function playSound(sound) {
     sound.play();
@@ -13,7 +15,6 @@ function playSound(sound) {
 
 TyponautApp.factory('socket', ['$rootScope', function ($rootScope) {
     var socket = io.connect();
-
     return {
         on: function (eventName, callback) {
             socket.on(eventName, callback);
@@ -59,11 +60,23 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
         if (msg == 'round_win') {
             playSound(roundWin);
         }
-        if (msg == 'round_lost') {
-            playSound(roundLost);
+        if (msg == 'wrong_answer') {
+            playSound(wrongAnswer);
         }
-        if (msg == 'round_lost') {
+        if (msg == 'too_slow') {
+            playSound(tooSlow);
+        }
+        if (msg == 'new_user') {
             playSound(newUser);
+        }
+        if (msg == 'game_victory') {
+            playSound(gameVictory);
+        }
+        if (msg == 'game_lost') {
+            playSound(gameLost);
+        }
+        if (msg == 'still_chance') {
+            playSound(stillChance);
         }
     });
 
@@ -106,7 +119,6 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
         if (msg == 'ended') {
             $scope.showGameView = false;
             $scope.gameEnded = true;
-            playSound(gameVictory);
         }
         $scope.$apply();
     });
