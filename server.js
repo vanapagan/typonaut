@@ -178,6 +178,7 @@ io.on('connection', function (socket) {
       gameStarted = true;
       socket.emit('accepted', 'yes');
       io.emit('status', name + ' joined the game');
+      socket.broadcast.emit('sound', "new_player");
       gameStarting1();
     } else {
       socket.emit('welcome', 'The game is already in progress. Please try again later.');
@@ -238,7 +239,7 @@ io.on('connection', function (socket) {
     if (current_word == check_word) {
       socket.emit('sound', 'round_win');
       socket.emit('comment', 'Good job!');
-      socket.broadcast.emit('comment', 'Come on, you\'re faster than you think!');
+      socket.broadcast.emit('comment', 'Come on, you\'re faster than that!');
       io.emit('status', socket.name + ' won the last round');
       players.addPoints(players.getPlayer(socket.id), check_word);
       setNewWord();

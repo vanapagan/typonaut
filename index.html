@@ -12,8 +12,8 @@
 </head>
 
 <body ng-controller="TyponautController" layout="column" ng-cloak style="background-color: rgb(250,250,250)">
-    <div ng-show="showMenu()" layout="row" layout-align="end start" layout-padding>
-        <div layout="row" layout-align="end end">
+    <div id="header" layout="row" layout-align="end start">
+        <div ng-show="showMenu()" layout="row" layout-align="end start" layout-padding>
             <div>
                 <p style="margin-right: 1em">{{name}}</p>
             </div>
@@ -28,11 +28,13 @@
                 <form id="nameForm" layout="column" ng-submit="join()" novalidate>
                     <div layout="column" layout-align="center center">
                         <p>{{welcome}}</p>
-                        <md-input-container>
-                            <label>Enter your name to begin</label>
-                            <input id="name" ng-model="name" autofocus>
-                        </md-input-container>
-                        <md-button type="submitName" class="md-primary md-raised">Join</md-button>
+                        <div layout="column" layout-align="start center">
+                            <md-input-container>
+                                <label>Enter your name to begin</label>
+                                <input id="name" ng-model="name" autofocus>
+                            </md-input-container>
+                            <md-button type="submitName" class="md-primary md-raised">Join</md-button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -40,7 +42,7 @@
                 <form ng-submit="sendWord()" novalidate>
                     <div layout="column" layout-align="center center">
                         <p>{{status}}</p>
-                        <div ng-show="gameStarted" layout="column" layout-align="center center">
+                        <div ng-show="gameStarted" layout="column" layout-align="start center">
                             <h2 class="unselectable">{{word}}</h2>
                             <md-input-container>
                                 <label>Type here</label>

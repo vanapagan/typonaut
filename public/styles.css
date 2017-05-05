@@ -1,3 +1,8 @@
+#header {
+    height: 15em;
+    max-height: 15em;
+}
+
 .unselectable {
     -webkit-touch-callout: none;
     -webkit-user-select: none;

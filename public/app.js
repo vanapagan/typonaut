@@ -44,9 +44,6 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
     });
 
     socket.on('status', function (msg) {
-        if (msg.search("joined the game") != -1) {
-            playSound(newUser);
-        }
         $scope.status = msg;
         $scope.$apply();
     });
@@ -65,6 +62,9 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
         }
         if (msg == 'round_lost') {
             playSound(roundLost);
+        }
+        if (msg == 'round_lost') {
+            playSound(newUser);
         }
     });
 
