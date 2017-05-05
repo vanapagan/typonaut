@@ -11,15 +11,15 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 
-<body ng-controller="TyponautController" layout="column" ng-cloak style="background-color: rgb(250,250,250)">
+<body ng-controller="TyponautController" layout="column" ng-cloak>
     <div id="header" layout="column" layout-align="start">
-        <div style="width: 100%" ng-show="showMenu()" layout="column" layout-align="end">
-            <div layout="row" layout-align="end center" style="background-color: rgb(63,81,181);color: #F5F5F5;">
-                <div layout-align="center center" style="margin-right: 1.5em; padding: 0.5em;">
-                    <p style="display:table-cell;vertical-align:middle;">{{name}}</p>
+        <div id="menu_holder" ng-show="showMenu()" layout="column" layout-align="end">
+            <div id="menu" layout="row" layout-align="end center">
+                <div class="menu_item" layout-align="center center">
+                    <p class="menu_item_content">{{name}}</p>
                 </div>
-                <div layout-align="center center" style="padding: 0.5em;">
-                    <p style="display:table-cell;vertical-align:middle;" ng-click="reloadPage()">Back</p>
+                <div class="menu_item" layout-align="center center">
+                    <p class="menu_item_content" ng-click="reloadPage()">Quit</p>
                 </div>
             </div>
         </div>
