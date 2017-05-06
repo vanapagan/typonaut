@@ -75,3 +75,11 @@ body {
 .cell {
     text-align: center;
 }
+
+img {
+    max-height: 9em;
+}
+
+md-content {
+    overflow: visible;
+}
