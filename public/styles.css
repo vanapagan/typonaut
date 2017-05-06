@@ -83,3 +83,12 @@ img {
 md-content {
     overflow: visible;
 }
+
+#logo {
+    width: 9em;
+    height: 9em;
+    max-width: 9em;
+    max-height: 9em;
+    background: url('/typonaut-logo-small-2.png') no-repeat;
+    background-size: 100%;
+}
