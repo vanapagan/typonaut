@@ -21,4 +21,4 @@ Ensure node.js is installed
     1. `cd typonaut`
     2. `npm install`
 3. Start the server: `node server.js`
-4. Go to http://localhost:30000 and play!
+4. Go to http://localhost:3000 and play!
