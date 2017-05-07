@@ -15,19 +15,26 @@ Ensure node.js is installed
 ### Getting started
 
 1. Clone this repository - 
+
 ... 
 https://github.com/vanapagan/typonaut.git 
 ...
+
 2. Install the dependencies:
+
 ...
 cd typonaut
 ...
+
 ...
 npm install
 ...
+
 3. Start the server 
+
 ...
 node server.js
 ...
+
 4. Visit http://localhost:30000
 5. Play!
