@@ -1,6 +1,0 @@
-dog
-cat
-hello
-money
-spider
-computer

@@ -6,6 +6,8 @@ var io = require('socket.io')(http);
 
 var port = 3000;
 
+app.use('/scripts', express.static(__dirname + '/node_modules/'));
+app.use('/styles', express.static(__dirname + '/node_modules/'));
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function (req, res) {
@@ -15,8 +17,7 @@ app.get('/', function (req, res) {
 http.listen(port);
 console.log('Server started at http://localhost:' + port);
 
-// var words = ['cow', 'dog', 'cat', 'hello', 'money', 'spider', 'computer'];
-var words = ['cow', 'dog'];
+var words = ['cow', 'dog', 'cat', 'hello', 'money', 'spider', 'computer'];
 var index = 0;
 
 var Collection = function () {

@@ -35,7 +35,7 @@ TyponautApp.controller('TyponautController', function ($scope, $http, $window, s
     $scope.showRestart = false;
     $scope.inPlay = false;
 
-    $scope.name = 'kristo';
+    $scope.name = '';
 
     socket.on('new_word', function (msg) {
         playSound(newWord);

@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>Typonaut</title>
-    
+
     <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
-    <link rel="stylesheet" href="/node_modules/angular-material/angular-material.css">
-    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/styles/angular-material/angular-material.css">
+    <link rel="stylesheet" href="/styles/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/styles.css">
 </head>
 
@@ -26,9 +26,7 @@
         </div>
     </div>
     <div align="center">
-        <!--img src="/typonaut-logo-small-2.png" alt="Typonaut"-->
         <div id="logo">
-
         </div>
     </div>
     <div id="divider">
@@ -41,6 +39,7 @@
                         <p>{{welcome}}</p>
                         <div layout="column" layout-align="start center">
                             <md-input-container>
+                                <label></label>
                                 <input class="input-c" ng-model="name" autofocus>
                             </md-input-container>
                             <md-button type="submitName" class="md-primary md-raised">Join</md-button>
@@ -55,6 +54,7 @@
                         <div ng-show="gameStarted" layout="column" layout-align="start center">
                             <h2 class="unselectable">{{word}}</h2>
                             <md-input-container>
+                                <label></label>
                                 <input class="input-c" ng-model="input" autofocus>
                             </md-input-container>
                             <p><small>{{comment}}</small></p>
@@ -84,13 +84,13 @@
             </div>
         </md-content>
     </div>
-    <script src="node_modules/jquery/dist/jquery.js"></script>
-    <script src="/node_modules/angular/angular.js"></script>
-    <script src="/node_modules/angular-aria/angular-aria.js"></script>
-    <script src="/node_modules/angular-animate/angular-animate.js"></script>
-    <script src="/node_modules/angular-material/angular-material.js"></script>
+    <script src="/scripts/jquery/dist/jquery.js"></script>
+    <script src="/scripts/angular/angular.js"></script>
+    <script src="/scripts/angular-aria/angular-aria.js"></script>
+    <script src="/scripts/angular-animate/angular-animate.js"></script>
+    <script src="/scripts/angular-material/angular-material.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/node_modules/angular-socket-io/socket.js"></script>
+    <script src="/scripts/angular-socket-io/socket.js"></script>
     <script src="/app.js"></script>
 </body>
 
