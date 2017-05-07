@@ -222,7 +222,7 @@ io.on('connection', function (socket) {
         winnerDisplayed = true;
         index = 0;
         current_word = words[0];
-        socket.broadcast.emit('sound', 'game_victory');
+        io.emit('sound', 'game_victory');
         io.emit('endgame', players.getWinner());
         broadcastLeaderboard();
       }
