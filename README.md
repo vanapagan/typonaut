@@ -7,15 +7,12 @@ This is a class project for Tallinn University of Technology's subject ITV0130 U
 ## Tehnologies used
 Angular Material, Node.js and Socket.io
 
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
-
 ## Prerequisites
 
 Ensure node.js is installed
 
 ## Getting started
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 1. Clone this repository - `git clone https://github.com/vanapagan/typonaut.git`
 2. Install the dependencies: 
     1. `cd typonaut`
