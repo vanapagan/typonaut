@@ -17,7 +17,7 @@ app.get('/', function (req, res) {
 http.listen(port);
 console.log('Server started at http://localhost:' + port);
 
-var words = ['cow', 'dog', 'cat', 'hello', 'money', 'spider', 'computer'];
+var words = ['until', 'weird', 'receive', 'anthrax', 'whether', 'sergeant', 'mouthwash', 'playwright', 'occasionally', 'conscientious'];
 var index = 0;
 
 var Collection = function () {
